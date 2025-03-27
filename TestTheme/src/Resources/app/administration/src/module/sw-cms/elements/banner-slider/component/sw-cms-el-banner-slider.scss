@@ -1,0 +1,75 @@
+.sw-cms-banner_slider {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+
+  .btn {
+    position: relative;
+    display: inline-block;
+    padding: 2px 24px;
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 36px;
+    color: #52667a;
+    text-decoration: none;
+    vertical-align: middle;
+    user-select: none;
+    background: #f9fafb;
+    border: 0 none;
+    border-radius: 4px;
+    outline: none;
+
+    &-primary {
+      color: #ffffff;
+      background-color: #758ca3;
+    }
+  }
+
+  .slide {
+    width: 100%;
+
+    &.gutter {
+      padding: 0 10px;
+    }
+  }
+
+  .content-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 400px;
+    padding: 20px;
+    background-color: #f0f2f5;
+
+    .small-headline {
+      padding-bottom: 10px;
+    }
+
+    .text {
+      padding-bottom: 20px;
+    }
+  }
+
+  .content {
+    position: relative;
+  }
+
+  .desktop-only {
+    display: block;
+  }
+
+  .mobile-only {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .desktop-only {
+      display: none;
+    }
+
+    .mobile-only {
+      display: block;
+    }
+  }
+}

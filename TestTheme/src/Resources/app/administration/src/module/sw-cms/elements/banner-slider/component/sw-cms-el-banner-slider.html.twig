@@ -1,0 +1,32 @@
+{% block sw_cms_el_banner_slider %}
+    <div class="sw-cms-banner_slider"
+         :class="{ 'gutter': element.config.sliderSettings.value.gutter && element.config.sliderSettings.value.gutter !== '0'}">
+
+        <div v-for="(slide, index) in element.config.slides.value"
+             :key="slide.id + index"
+             class="slide"
+             :class="{ 'gutter': element.config.sliderSettings.value.gutter && element.config.sliderSettings.value.gutter !== '0'}">
+
+            <!-- Desktop Image -->
+            <div v-if="slide.desktopMedia" class="image-container desktop-only">
+                Image
+            </div>
+
+            <!-- Mobile Image -->
+            <div v-if="slide.mobileMedia" class="image-container mobile-only">
+                Image
+            </div>
+
+            <!-- Content -->
+            <div class="content-container"
+                 :class="{ 'has-background-media': slide.desktopMedia || slide.mobileMedia }">
+                <div class="content">
+                    <h2 v-if="slide.title" class="title">
+                        {{ slide.title }}
+                    </h2>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

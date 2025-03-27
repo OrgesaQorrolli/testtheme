@@ -1,0 +1,151 @@
+{% block sw_cms_el_config_banner_slider %}
+    <div class="sw-cms-el-config-banner_slider">
+        <sw-tabs default-item="slides" position-identifier="sw-cms-el-config-banner_slider">
+            <template #default="{ active }">
+                {% block sw_cms_el_config_wpbanner_slider_tabs %}
+                    <sw-tabs-item name="slides" :active-tab="active">
+                        {{ $tc('Content') }}
+                    </sw-tabs-item>
+                {% endblock %}
+            </template>
+
+            <template #content="{ active }">
+                {% block sw_cms_el_config_banner_slider_slides %}
+                    <div v-show="active === 'slides'">
+                        {% block sw_cms_el_config_wpbanner_slider_slides_list %}
+                            <ul class="slides">
+                                <li v-for="(slide, index) in element.config.slides.value" :key="index" class="slide">
+                                    <sw-container columns="1fr auto">
+                                        <div class="settings">
+                                            <sw-collapse>
+                                                <template v-slot:header>
+                                                    <h2 class="mb-0">
+                                                        Slide {{ index + 1 }}
+                                                    </h2>
+                                                    <sw-icon name="regular-chevron-down-xxs"/>
+                                                </template>
+                                                <template v-slot:content>
+                                                    <sw-tabs default-item="main"
+                                                             position-identifier="sw-cms-el-config-banner_slider-slide-${index}">
+                                                        <template #default="{ active }">
+                                                            {% block sw_cms_el_config_ap_text_image_slider_slides_slide_tabs %}
+                                                                <sw-tabs-item name="main" :active-tab="active">
+                                                                    {{ $tc('Main Content') }}
+                                                                </sw-tabs-item>
+                                                                <sw-tabs-item name="visibility" :active-tab="active">
+                                                                    {{ $tc('Visibility') }}
+                                                                </sw-tabs-item>
+                                                            {% endblock %}
+                                                        </template>
+
+                                                        <template #content="{ active }">
+                                                            {% block main_content_tab %}
+                                                                <div v-show="active === 'main'">
+                                                                    <sw-text-field v-model:value="slide.title"
+                                                                                   :label="$tc('Title')"/>
+                                                                    <sw-text-editor v-model:value="slide.text"
+                                                                                    :label="$tc('Description')"/>
+                                                                    <sw-text-editor v-model:value="slide.buttonText"
+                                                                                    :label="$tc('Button Text')"/>
+                                                                    <sw-dynamic-url-field
+                                                                            v-model:value="slide.buttonUrl"/>
+                                                                    <sw-text-editor v-model:value="slide.linkText"
+                                                                                    :label="$tc('Link Text')"/>
+                                                                    <sw-dynamic-url-field
+                                                                            v-model:value="slide.linkUrl"/>
+                                                                    <sw-switch-field v-model:value="slide.content"
+                                                                                     :label="$tc('Enable HTML Editor for Content')">
+                                                                    </sw-switch-field>
+
+                                                                    <template v-if="slide.content">
+                                                                        <sw-text-editor
+                                                                                v-model:value="slide.contentText"
+                                                                                :label="$tc('Content')"/>
+                                                                    </template>
+                                                                </div>
+                                                            {% endblock %}
+
+                                                            {% block visibility_tab %}
+                                                                <div v-show="active === 'visibility'">
+                                                                    <sw-container>
+                                                                        <sw-upload-listener
+                                                                                :upload-tag="'cms-block-media-config-desktop-' + element.id"
+                                                                                auto-upload
+                                                                                @media-upload-finish="(media) => onFinishUploadDesktopMedia(media, index)">
+                                                                        </sw-upload-listener>
+
+                                                                        <sw-media-compact-upload-v2
+                                                                                v-if="slideDesktopMediaPreviews[index] !== undefined"
+                                                                                :label="$tc('Desktop Image or Video')"
+                                                                                :source="slideDesktopMediaPreviews[index]"
+                                                                                :upload-tag="'cms-block-media-config-desktop-' + element.id"
+                                                                                :default-folder="cmsPageState.pageEntityName"
+                                                                                file-accept="*/*"
+                                                                                @media-upload-remove-image="() => onRemoveSlideDesktopMedia(slide)"
+                                                                                @selection-change="(media) => onChangeDesktopMedia(media, index)">
+                                                                        </sw-media-compact-upload-v2>
+
+                                                                        <sw-upload-listener
+                                                                                :upload-tag="'cms-block-media-config-mobile-' + element.id"
+                                                                                auto-upload
+                                                                                @media-upload-finish="(media) => onFinishUploadMobileMedia(media, index)">
+                                                                        </sw-upload-listener>
+
+                                                                        <sw-media-compact-upload-v2
+                                                                                v-if="slideMobileMediaPreviews[index] !== undefined"
+                                                                                :label="$tc('Mobile Image or Video')"
+                                                                                :source="slideMobileMediaPreviews[index]"
+                                                                                :upload-tag="'cms-block-media-config-mobile-' + element.id"
+                                                                                :default-folder="cmsPageState.pageEntityName"
+                                                                                file-accept="*/*"
+                                                                                @media-upload-remove-image="() => onRemoveSlideMobileMedia(slide)"
+                                                                                @selection-change="(media) => onChangeMobileMedia(media, index)">
+                                                                        </sw-media-compact-upload-v2>
+                                                                    </sw-container>
+                                                                </div>
+                                                            {% endblock %}
+                                                        </template>
+                                                    </sw-tabs>
+                                                </template>
+                                            </sw-collapse>
+                                        </div>
+
+                                        {% block sw_cms_el_config_wpbanner_slider_slides_slide_actions %}
+                                            <div class="actions">
+                                                <sw-button square :disabled="index === 0" size="small" class="move-up"
+                                                           @click="onClickMoveSlide(index, 'up')">
+                                                    <sw-icon name="regular-chevron-up-xxs"/>
+                                                </sw-button>
+                                                <sw-container columns="1fr 1fr" gap="10px">
+                                                    <sw-button square size="small" variant="ghost"
+                                                               @click="onClickDuplicateSlide(slide)">
+                                                        <sw-icon small name="regular-products-s"/>
+                                                    </sw-button>
+
+                                                    <sw-button square size="small" class="remove"
+                                                               :disabled="element.config.slides.value.length === 1"
+                                                               variant="danger" @click="onClickRemoveSlide(slide)">
+                                                        <sw-icon small name="regular-trash"/>
+                                                    </sw-button>
+                                                </sw-container>
+                                                <sw-button square
+                                                           :disabled="index === element.config.slides.value.length - 1"
+                                                           size="small" class="move-down"
+                                                           @click="onClickMoveSlide(index, 'down')">
+                                                    <sw-icon name="regular-chevron-down-xxs"/>
+                                                </sw-button>
+                                            </div>
+                                        {% endblock %}
+                                    </sw-container>
+                                </li>
+                            </ul>
+                        {% endblock %}
+                        <sw-button block variant="ghost" @click="onClickAddSlide" class="add-slide-btn">
+                            Add
+                        </sw-button>
+                    </div>
+                {% endblock %}
+            </template>
+        </sw-tabs>
+    </div>
+{% endblock %}

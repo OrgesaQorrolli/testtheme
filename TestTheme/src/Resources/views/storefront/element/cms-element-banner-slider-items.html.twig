@@ -1,0 +1,123 @@
+{% block element_banner_slider %}
+
+    {% set baseSliderOptions = {
+        slider: {
+            items: 1,
+            gutter: 30,
+            slideBy : '1',
+            nav: true,
+            navPosition: bottom,
+            controls: false,
+            autoplay: true,
+            autoplayTimeout: 6000,
+            loop: true,
+            autoHeight: false,
+            autoplayHoverPause: true,
+            responsive: {
+                xs: { items: 1 },
+                sm: { items: 1 },
+                md: { items: 1 },
+            },
+        }
+    } %}
+
+    <div class="base-slider banner-slider-wrapper" data-base-slider="true"
+         data-base-slider-options='{{ baseSliderOptions|json_encode }}'
+         data-ap-header-slider-scroll-control="true">
+
+        <div class="cms-element-banner-slider" data-base-slider-container="true">
+
+            {% for bannerConfig in element.config.slides.value %}
+                {% set title = bannerConfig.title %}
+                {% set description = bannerConfig.text %}
+                {% set content = bannerConfig.contentText %}
+                {% set buttonText = bannerConfig.buttonText %}
+                {% set buttonUrl = bannerConfig.buttonUrl %}
+                {% set linkText = bannerConfig.linkText %}
+                {% set linkUrl = bannerConfig.linkUrl %}
+                {% set desktopImageId = bannerConfig.desktopMedia %}
+                {% set mobileImageId = bannerConfig.mobileMedia %}
+
+                {# --- Resolve media entities safely --- #}
+                {% set desktopImage = null %}
+                {% set mobileImage = null %}
+
+                {% if desktopImageId is not empty %}
+                    {% set mediaCollection = searchMedia([desktopImageId], context.context) %}
+                    {% set desktopImage = mediaCollection.get(desktopImageId) %}
+                {% endif %}
+
+                {% if mobileImageId is not empty %}
+                    {% set mobileMediaCollection = searchMedia([mobileImageId], context.context) %}
+                    {% set mobileImage = mobileMediaCollection.get(mobileImageId) %}
+                {% endif %}
+
+                <div class="banner">
+                    <div class="content-elements">
+                        {% if title is not empty %}
+                            <h2 class="title">{{ title|trans|raw }}</h2>
+                        {% endif %}
+                        {% if description is not empty %}
+                            <p class="description">{{ description|trans|raw }}</p>
+                        {% endif %}
+                        {% if bannerConfig.buttonText %}
+                            <a href="{{ buttonUrl }}" class="button-link">{{ buttonText|trans|raw }}</a>
+                        {% endif %}
+                        {% if bannerConfig.linkText %}
+                            <a href="{{ linkUrl }}" class="link-url">{{ linkText|trans|raw }}</a>
+                        {% endif %}
+                    </div>
+
+                    <div class="image-section">
+                        <div class="{% if mobileImage %}d-none{% endif %} d-lg-block">
+                            {% if desktopImage %}
+                                {% if desktopImage.mediaType.name == "VIDEO" %}
+                                    <video controls>
+                                        <source src="{{ desktopImage.url }}" type="video/mp4">
+                                    </video>
+                                {% else %}
+                                    {% sw_thumbnails 'banner-media' with {
+                                        media: desktopImage,
+                                        attributes: {
+                                            class: 'media-desktop',
+                                            loading: 'lazy',
+                                            alt: 'banner'
+                                        }
+                                    } %}
+                                {% endif %}
+                            {% endif %}
+                        </div>
+
+                        <div class="d-lg-none">
+                            {% if mobileImage %}
+                                {% if mobileImage.mediaType.name == "VIDEO" %}
+                                    <video controls>
+                                        <source src="{{ mobileImage.url }}" type="video/mp4">
+                                    </video>
+                                {% else %}
+                                    {% sw_thumbnails 'banner-media' with {
+                                        media: mobileImage,
+                                        attributes: {
+                                            class: 'media-mobile',
+                                            loading: 'lazy',
+                                            alt: 'banner'
+                                        }
+                                    } %}
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if content is not empty %}
+                        <div class="content-wrapper">
+                            <p>{{ content|trans|raw }}</p>
+                        </div>
+                    {% endif %}
+
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+{% endblock %}

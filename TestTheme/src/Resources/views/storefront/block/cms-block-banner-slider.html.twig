@@ -1,0 +1,6 @@
+{% block block_banner_slider %}
+    {% set element = block.slots.getSlot('slider') %}
+        {% block block_banner_slider_inner %}
+            {% sw_include "@Storefront/storefront/element/cms-element-banner-slider-items.html.twig" ignore missing %}
+        {% endblock %}
+{% endblock %}

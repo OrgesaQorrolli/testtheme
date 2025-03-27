@@ -1,0 +1,9 @@
+{
+  "test-theme": {
+    "listing": {
+      "resetFilters": "Reset filters",
+      "filterPanelAriaLive": "Showing %count% products",
+      "noProductsMatchingFilters": "No products displayed"
+    }
+  }
+}

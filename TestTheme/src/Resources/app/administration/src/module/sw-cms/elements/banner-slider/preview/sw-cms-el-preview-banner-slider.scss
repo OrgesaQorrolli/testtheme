@@ -1,0 +1,12 @@
+.photos {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-around;
+  margin: 10px;
+
+  img {
+    padding: 4px;
+    width: 30%
+  }
+}
